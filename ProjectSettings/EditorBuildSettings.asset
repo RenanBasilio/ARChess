@@ -4,4 +4,7 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/VoiceRecognition_Test.unity
+    guid: e5a8de0f2ec408b4e851ccbdab3d16a4
