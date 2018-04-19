@@ -35,3 +35,7 @@ sysinfo.txt
 
 # VSCode config
 .vscode
+
+# Voice Model Streaming Assets
+Assets/StreamingAssets/VoiceRecognition/LanguageModel/
+Assets/StreamingAssets/VoiceRecognition/VoiceModel/

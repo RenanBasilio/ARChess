@@ -10,10 +10,10 @@ using System.Runtime.InteropServices;
 public class VoiceRecognizer : MonoBehaviour {
 
 	#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-		IntPtr decoder;
+		private Decoder decoder;
 
 	#elif UNITY_ANDROID
-		AndroidJavaObject decoder;
+		private AndroidJavaObject decoder;
 
 	#endif
 
@@ -41,9 +41,15 @@ public class VoiceRecognizer : MonoBehaviour {
 		Debug.Log("Inicializando decodificador.");
 
 		#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-			Debug.Log(PocketSphinxPINVOKE.ps_args());
-			//decoder = PocketSphinxPINVOKE.ps_init(PocketSphinxPINVOKE.ps_args());
-			debugLog.text += decoder + "\n";
+			String[] args = new String[6] {
+				"-hmm", Application.streamingAssetsPath + "VoiceRecognition/VoiceModel/cmusphinx-en-us-ptm-8khz-5.2",
+				"-lm", Application.streamingAssetsPath + "VoiceRecognition/LanguageModel/en-70-0.1.lm.bin",
+				"-dict", Application.streamingAssetsPath + "VoiceRecognition/dict-en-us.dict"
+			};
+			
+			cmd_ln_t decoder_args = PocketSphinx.buildDecoderArgs( new cmd_ln_t(IntPtr.Zero), PocketSphinx.getArgumentDefinitions(), args );
+			decoder = new Decoder(decoder_args);
+
 		#elif UNITY_ANDROID
 			// Inicializa classe Decoder em java no pacote edu.cmu.pocketsphinx
 			AndroidJavaClass decoderClass = new AndroidJavaClass("edu.cmu.pocketsphinx.Decoder");
@@ -52,10 +58,12 @@ public class VoiceRecognizer : MonoBehaviour {
 			AndroidJavaObject config = decoderClass.Call<AndroidJavaObject>("DefaultConfig");
 
 			// Constroi um array de parametros.
-			object[] hmm = new object[2] {"-hmm", Application.streamingAssetsPath + "/VoiceModel/cmusphinx-en-us-ptm-8khz-5.2"};
+			String[] hmm = new String[2] {"-hmm", Application.streamingAssetsPath + "VoiceRecognition/VoiceModel/cmusphinx-en-us-ptm-8khz-5.2"};
+			String[] lm = new String[2] {"-lm", Application.streamingAssetsPath + "VoiceRecognition/LanguageModel/en-70-0.1.lm.bin"};
+			String[] dict = new String[2] {"-dict", Application.streamingAssetsPath + "VoiceRecognition/dict-en-us.dict"};
 
 			// Chama o metodo de java que configura os parametros
-			config.Call("SetString", hmm);
+			config.Call("SetString", hmm[0], hmm[1]);
 		#endif
 	}
 }
