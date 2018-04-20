@@ -45,12 +45,12 @@ public class Console : MonoBehaviour
 
 	void OnEnable ()
 	{
-		Application.RegisterLogCallback(HandleLog);
+		Application.logMessageReceived += HandleLog;
 	}
 
 	void OnDisable ()
 	{
-		Application.RegisterLogCallback(null);
+		Application.logMessageReceived -= HandleLog;
 	}
 
 	void Update ()
@@ -105,8 +105,8 @@ public class Console : MonoBehaviour
 				logs.Clear();
 			}
 
-			collapse = GUILayout.Toggle(collapse, collapseLabel, GUILayout.ExpandWidth(false));
 			displayStackTrace = GUILayout.Toggle(displayStackTrace, stackTraceLabel, GUILayout.ExpandWidth(false));
+			collapse = GUILayout.Toggle(collapse, collapseLabel, GUILayout.ExpandWidth(false));
 
 		GUILayout.EndHorizontal();
 
