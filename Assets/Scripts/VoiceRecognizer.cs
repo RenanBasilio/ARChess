@@ -23,11 +23,8 @@ public class VoiceRecognizer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		debugLog = GameObject.Find("DebugLog").GetComponent<Text>();
-		debugLog.text = "Debug log found.\n";
-
-		debugLog.text += Application.streamingAssetsPath + "/VoiceModel/cmusphinx-en-us-ptm-8khz-5.2" + "\n";
-		debugLog.text += Directory.Exists(Application.streamingAssetsPath + "/VoiceModel/cmusphinx-en-us-ptm-8khz-5.2") + "\n";
+		Debug.Log(Application.streamingAssetsPath + "/VoiceModel/cmusphinx-en-us-ptm-8khz-5.2");
+		Debug.Log(Directory.Exists(Application.streamingAssetsPath + "/VoiceModel/cmusphinx-en-us-ptm-8khz-5.2"));
 		SetupDecoder();
 	}
 	
