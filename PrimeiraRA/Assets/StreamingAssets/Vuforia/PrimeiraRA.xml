@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="mao" size="1.000000 0.990050" />
+    <ImageTarget name="mao2" size="1.000000 0.990050" />
+    <ImageTarget name="1_5143551545475858467" size="1.000000 1.024837" />
+    <ImageTarget name="marcador2" size="1.000000 1.000000" />
+    <ImageTarget name="marcador" size="1.000000 1.000000" />
+  </Tracking>
+</QCARConfig>
