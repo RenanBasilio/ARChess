@@ -7,6 +7,11 @@ public class colisao : MonoBehaviour {
 	GameObject selectedPiece;
 	GameObject[] newpos;
 	
+	int[] numSquare(GameObject piece){
+		int[] ret={(int)Mathf.Round(Mathf.Abs(piece.transform.position.x-14)/4+1),(int)Mathf.Round((float)((piece.transform.position.y-2.32)/0.26+1))};
+		return ret;
+	}
+	
     void OnTriggerEnter (Collider col){
 		if (!selectedPiece){
 			selectedPiece=col.gameObject;
