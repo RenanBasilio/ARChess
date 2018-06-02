@@ -148,7 +148,71 @@ public class colisao : MonoBehaviour {
 	}
 	
 	void addCubesKnight(GameObject piece){
-		
+		GameObject cube;
+		if (!(piece.name.Split()[0]=="Black"&&square(piece)[0]>6)&&!(piece.name.Split()[0]=="White"&&square(piece)[0]<3)){
+			if (!(piece.name.Split()[0]=="Black"&&square(piece)[1]==1)&&!(piece.name.Split()[0]=="White"&&square(piece)[1]==8)){
+				cube=GameObject.CreatePrimitive(PrimitiveType.Cube);
+				cube.transform.rotation=selectedPiece.transform.rotation;
+				cube.transform.position=selectedPiece.transform.position;
+				cube.transform.Translate(8,-4,0); //forward-left
+				newpos.Add(cube);
+			}
+			if (!(piece.name.Split()[0]=="Black"&&square(piece)[1]==8)&&!(piece.name.Split()[0]=="White"&&square(piece)[1]==1)){
+				cube=GameObject.CreatePrimitive(PrimitiveType.Cube);
+				cube.transform.rotation=selectedPiece.transform.rotation;
+				cube.transform.position=selectedPiece.transform.position;
+				cube.transform.Translate(8,4,0); //forward-right
+				newpos.Add(cube);
+			}
+		}
+		if (!(piece.name.Split()[0]=="Black"&&square(piece)[0]<6)&&!(piece.name.Split()[0]=="White"&&square(piece)[0]>3)){
+			if (!(piece.name.Split()[0]=="Black"&&square(piece)[1]==1)&&!(piece.name.Split()[0]=="White"&&square(piece)[1]==8)){
+				cube=GameObject.CreatePrimitive(PrimitiveType.Cube);
+				cube.transform.rotation=selectedPiece.transform.rotation;
+				cube.transform.position=selectedPiece.transform.position;
+				cube.transform.Translate(-8,-4,0); //backward-left
+				newpos.Add(cube);
+			}
+			if (!(piece.name.Split()[0]=="Black"&&square(piece)[1]==8)&&!(piece.name.Split()[0]=="White"&&square(piece)[1]==1)){
+				cube=GameObject.CreatePrimitive(PrimitiveType.Cube);
+				cube.transform.rotation=selectedPiece.transform.rotation;
+				cube.transform.position=selectedPiece.transform.position;
+				cube.transform.Translate(-8,4,0); //backward-right
+				newpos.Add(cube);
+			}
+		}
+		if (!(piece.name.Split()[0]=="Black"&&square(piece)[1]>6)&&!(piece.name.Split()[0]=="White"&&square(piece)[1]<3)){
+			if (!(piece.name.Split()[0]=="Black"&&square(piece)[0]==1)&&!(piece.name.Split()[0]=="White"&&square(piece)[0]==8)){
+				cube=GameObject.CreatePrimitive(PrimitiveType.Cube);
+				cube.transform.rotation=selectedPiece.transform.rotation;
+				cube.transform.position=selectedPiece.transform.position;
+				cube.transform.Translate(4,-8,0); //left-front
+				newpos.Add(cube);
+			}
+			if (!(piece.name.Split()[0]=="Black"&&square(piece)[0]==8)&&!(piece.name.Split()[0]=="White"&&square(piece)[0]==1)){
+				cube=GameObject.CreatePrimitive(PrimitiveType.Cube);
+				cube.transform.rotation=selectedPiece.transform.rotation;
+				cube.transform.position=selectedPiece.transform.position;
+				cube.transform.Translate(-4,-8,0); //left-back
+				newpos.Add(cube);
+			}
+		}
+		if (!(piece.name.Split()[0]=="Black"&&square(piece)[1]<6)&&!(piece.name.Split()[0]=="White"&&square(piece)[1]>3)){
+			if (!(piece.name.Split()[0]=="Black"&&square(piece)[0]==1)&&!(piece.name.Split()[0]=="White"&&square(piece)[0]==8)){
+				cube=GameObject.CreatePrimitive(PrimitiveType.Cube);
+				cube.transform.rotation=selectedPiece.transform.rotation;
+				cube.transform.position=selectedPiece.transform.position;
+				cube.transform.Translate(4,8,0); //right-front
+				newpos.Add(cube);
+			}
+			if (!(piece.name.Split()[0]=="Black"&&square(piece)[0]==8)&&!(piece.name.Split()[0]=="White"&&square(piece)[0]==1)){
+				cube=GameObject.CreatePrimitive(PrimitiveType.Cube);
+				cube.transform.rotation=selectedPiece.transform.rotation;
+				cube.transform.position=selectedPiece.transform.position;
+				cube.transform.Translate(-4,8,0); //right-back
+				newpos.Add(cube);
+			}
+		}
 	}
 	
 	void addCubesKing(GameObject piece){
@@ -231,14 +295,14 @@ public class colisao : MonoBehaviour {
 					break;
 				case "Queen(Clone)":
 					addCubesForwardBackward(selectedPiece);
-					addCubesLeftRight(selectedPiece);
+					//addCubesLeftRight(selectedPiece);
 					break;
 				case "Knight(Clone)":
 					addCubesKnight(selectedPiece);
 					break;
 				case "Rook(Clone)":
 					addCubesForwardBackward(selectedPiece);
-					addCubesLeftRight(selectedPiece);
+					//addCubesLeftRight(selectedPiece);
 					break;
 			}
 			selectedPiece.transform.parent=gameObject.transform;
