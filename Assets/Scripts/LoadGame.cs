@@ -1,11 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Vuforia;
 
 public class LoadGame : MonoBehaviour, ITrackableEventHandler {
 
 	private TrackableBehaviour mTrackableBehaviour;
+
+	private bool unregister;
 
 	// Use this for initialization
 	void Start () {
@@ -18,7 +22,13 @@ public class LoadGame : MonoBehaviour, ITrackableEventHandler {
 	
 	// Update is called once per frame
 	void Update () {
-		
+
+	}
+
+	void LateUpdate() {
+		if(unregister) {
+			mTrackableBehaviour.UnregisterTrackableEventHandler(this);
+		}
 	}
 
     void ITrackableEventHandler.OnTrackableStateChanged(TrackableBehaviour.Status previousStatus, TrackableBehaviour.Status newStatus)
@@ -26,7 +36,11 @@ public class LoadGame : MonoBehaviour, ITrackableEventHandler {
         if (newStatus == TrackableBehaviour.Status.DETECTED ||
             newStatus == TrackableBehaviour.Status.TRACKED)
         {
-            Debug.Log("OK");
+			Debug.Log("OK");
+			SceneManager.LoadScene("Demo", LoadSceneMode.Additive);
+			GameObject.Find("Canvas").SetActive(false);
+
+			unregister = true;
         }
     }
 }

@@ -8,6 +8,10 @@ public class ChessUiEngine : MonoBehaviour {
 	public List<Transform> whitePiecePrefabs;
 	public List<Transform> blackPiecePrefabs;
 
+	public void Start(){
+
+	}
+
 	public int RaycastCell(Ray ray) {
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, 100)) {
@@ -20,26 +24,34 @@ public class ChessUiEngine : MonoBehaviour {
 	}
 
 	public void SetupPieces() {
+		Transform board = GameObject.Find("Board").transform;
+
 		for (int i = 0; i < 8; i++) {
 			Transform piece = GameObject.Instantiate (whitePiecePrefabs [(int)setup [i]]);
 			Vector3 worldPoint = ToWorldPoint (i);
-			piece.position = new Vector3(worldPoint.x, piece.position.y, worldPoint.z);	
+			piece.position = new Vector3(worldPoint.x, piece.position.y, worldPoint.z);
+			piece.SetParent(board);
 		}
 		for (int i = 0; i < 8; i++) {
 			Transform piece = GameObject.Instantiate (blackPiecePrefabs [(int)setup [i]]);
 			Vector3 worldPoint = ToWorldPoint (i+56);
-			piece.position = new Vector3(worldPoint.x, piece.position.y, worldPoint.z);	
+			piece.position = new Vector3(worldPoint.x, piece.position.y, worldPoint.z);
+			piece.SetParent(board);
 		}
 		for (int i = 0; i < 8; i++) {
 			Transform piece = GameObject.Instantiate (whitePiecePrefabs [(int)Piece.Pawn]);
 			Vector3 worldPoint = ToWorldPoint (i+8);
-			piece.position = new Vector3(worldPoint.x, piece.position.y, worldPoint.z);	
+			piece.position = new Vector3(worldPoint.x, piece.position.y, worldPoint.z);
+			piece.SetParent(board);
 		}
 		for (int i = 0; i < 8; i++) {
 			Transform piece = GameObject.Instantiate (blackPiecePrefabs [(int)Piece.Pawn]);
 			Vector3 worldPoint = ToWorldPoint (i+48);
-			piece.position = new Vector3(worldPoint.x, piece.position.y, worldPoint.z);	
+			piece.position = new Vector3(worldPoint.x, piece.position.y, worldPoint.z);
+			piece.SetParent(board);
 		}
+
+	 	transform.SetParent(GameObject.Find("ChessTarget").transform, false);
 	}
 
 	public static string GetCellString (int cellNumber)
