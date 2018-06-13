@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Vuforia;
 
 public class LoadGame : MonoBehaviour, ITrackableEventHandler {
@@ -22,7 +23,11 @@ public class LoadGame : MonoBehaviour, ITrackableEventHandler {
 	
 	// Update is called once per frame
 	void Update () {
-
+		if(unregister) {
+			GameObject.Find("Title").GetComponent<Text>().CrossFadeAlpha(0.0f, 0.35f, false);
+			GameObject.Find("Hint").GetComponent<Text>().CrossFadeAlpha(0.0f, 0.35f, false);
+			GameObject.Find("HintIcon").GetComponent<RawImage>().CrossFadeAlpha(0.0f, 0.35f, false);
+		}
 	}
 
 	void LateUpdate() {
@@ -38,7 +43,6 @@ public class LoadGame : MonoBehaviour, ITrackableEventHandler {
         {
 			Debug.Log("OK");
 			SceneManager.LoadScene("Demo", LoadSceneMode.Additive);
-			GameObject.Find("Canvas").SetActive(false);
 
 			unregister = true;
         }
