@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4907335115339660}
   - component: {fileID: 33717675187569760}
   - component: {fileID: 23646452995543282}
+  - component: {fileID: 65394917157625162}
   m_Layer: 0
   m_Name: Black King
   m_TagString: ChessPiece
@@ -83,3 +84,15 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1381633088875808}
   m_Mesh: {fileID: 4300000, guid: 38b25f2f6027b4fe3a7e76c64d059379, type: 3}
+--- !u!65 &65394917157625162
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1381633088875808}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.051382888, y: 0.05138289, z: 0.018840682}
+  m_Center: {x: 0.0000000018626451, y: 1.4240572e-16, z: 0.0006263069}

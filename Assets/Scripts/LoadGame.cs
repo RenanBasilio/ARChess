@@ -24,9 +24,10 @@ public class LoadGame : MonoBehaviour, ITrackableEventHandler {
 	// Update is called once per frame
 	void Update () {
 		if(unregister) {
-			GameObject.Find("Title").GetComponent<Text>().CrossFadeAlpha(0.0f, 0.35f, false);
-			GameObject.Find("Hint").GetComponent<Text>().CrossFadeAlpha(0.0f, 0.35f, false);
-			GameObject.Find("HintIcon").GetComponent<RawImage>().CrossFadeAlpha(0.0f, 0.35f, false);
+			GameObject.Find("Title").GetComponent<Text>().CrossFadeAlpha(0.0f, 0.5f, false);
+			GameObject.Find("Hint").GetComponent<Text>().CrossFadeAlpha(0.0f, 0.5f, false);
+			GameObject.Find("HintIcon").GetComponent<RawImage>().CrossFadeAlpha(0.0f, 0.5f, false);
+			unregister = false;
 		}
 	}
 

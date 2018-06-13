@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4011343921335002}
   - component: {fileID: 33023447077393174}
   - component: {fileID: 23130532683746060}
+  - component: {fileID: 65032469376961352}
   m_Layer: 0
   m_Name: White Queen
   m_TagString: ChessPiece
@@ -83,3 +84,15 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1639620864090624}
   m_Mesh: {fileID: 4300000, guid: f4285efefb82a4b62a2378a8762e2951, type: 3}
+--- !u!65 &65032469376961352
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1639620864090624}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.059734415, y: 0.05973443, z: 0.019464966}
+  m_Center: {x: 0.0000000018626451, y: -0.000000006510305, z: 0.000017934479}
