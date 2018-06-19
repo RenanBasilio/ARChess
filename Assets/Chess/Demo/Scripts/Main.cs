@@ -4,15 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Main : MonoBehaviour {
-	public ChessUiEngine uiEngine;
+	public ChessEngine engine;
 	// Use this for initialization
 	void Start () {
-		uiEngine.SetupPieces ();
+		engine.SetupPieces ();
 	}
 
 	void FixedUpdate () {
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); 
-		int cellNumber = uiEngine.RaycastCell (ray);
+		int cellNumber = engine.RaycastCell (ray);
 		if (!IsValidCell(cellNumber)) {
 			return;
 		}
