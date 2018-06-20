@@ -47,12 +47,26 @@ public class ChessEngine : MonoBehaviour {
 		if (Physics.Raycast (ray, out hit, 100)) {
 			Tile tileHit = hit.transform.GetComponentInParent<Tile>();
 			////////////////////////////////////////////////////////////////////////////
-			List<Pair<int, int>> possibleMoves = tileHit.getPiece().getPossibleMoves();
+			
 			foreach (Tile tile in activeTiles)
 			{
 				tile.disableDisplay();
 			}
 			activeTiles.Clear();
+			activeTiles.AddRange(
+				tileHit
+					// Get piece hit
+					.getPiece()
+					// Get movement function from piece hit
+					.getMoveMethods()
+					// Call movement function
+					.Invoke(chessboard, tileHit.position.First, tileHit.position.Second));
+			foreach (Tile tile in activeTiles)
+			{
+				Debug.Log("Enabling tile [" + tile.position.First + "," + tile.position.Second + "]");
+				tile.enableDisplay(tileHit.getPiece().owner);
+			}
+			/*
 			foreach (Pair<int, int> item in possibleMoves)
 			{
 				if (tileHit.position.First + item.First <= 7 
@@ -63,7 +77,7 @@ public class ChessEngine : MonoBehaviour {
 						chessboard[tileHit.position.First + item.First, tileHit.position.Second + item.Second].enableDisplay(tileHit.getPiece().owner);
 						activeTiles.Add(chessboard[tileHit.position.First + item.First, tileHit.position.Second + item.Second]);
 					}
-			}
+			}*/
 			////////////////////////////////////////////////////////////////////////////
 			return 1;
 		}
@@ -74,17 +88,19 @@ public class ChessEngine : MonoBehaviour {
 
 		lostPieces[Player.Black].Clear();
 		lostPieces[Player.White].Clear();
-
+		//chessboard[3,4].setPiece(new Piece(Player.Black, PieceType.Rook, GameObject.Instantiate (blackPiecePrefabs [(int)PieceType.Pawn])));
+		
 		for (int i = 0; i < 8; i++) {
 			// White piece
 			chessboard[0, i].setPiece(new Piece(Player.White, setup[i], GameObject.Instantiate (whitePiecePrefabs [(int)setup [i]])));
 			// White pawn
-			chessboard[1, i].setPiece(new Piece(Player.White, PieceType.Pawn, GameObject.Instantiate (whitePiecePrefabs[(int)PieceType.Pawn])));
+			//chessboard[1, i].setPiece(new Piece(Player.White, PieceType.Pawn, GameObject.Instantiate (whitePiecePrefabs[(int)PieceType.Pawn])));
 			// Black pawn
 			chessboard[6, i].setPiece(new Piece(Player.Black, PieceType.Pawn, GameObject.Instantiate (blackPiecePrefabs[(int)PieceType.Pawn])));
 			// Black piece
 			chessboard[7, i].setPiece(new Piece(Player.Black, setup[i], GameObject.Instantiate (blackPiecePrefabs [(int)setup [i]])));
 		}
+		
 
 	}
 

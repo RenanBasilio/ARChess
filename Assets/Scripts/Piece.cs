@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Chess;
 using UnityEngine;
 
 namespace Chess
@@ -119,6 +121,59 @@ namespace Chess
                 default:
                     return new List<Pair<int, int>>();
             }
+        }
+
+        public Func<Tile[,], int, int, List<Tile>> getMoveMethods() {
+            switch (type)
+            {
+                case PieceType.Rook:
+                    return movesRook;
+                default:
+                    return null;
+            }
+        }
+
+        public static List<Tile> movesRook(Tile[,] chessboard, int pieceRow, int pieceColumn) {
+            bool stop = false;
+            Piece piece = chessboard[pieceRow, pieceColumn].getPiece();
+            List<Tile> enabledTiles = new List<Tile>();
+
+            int i = 1;
+            while (!stop)
+            {
+                if (pieceColumn + i > 7 ) break;
+                if (chessboard[pieceRow, pieceColumn+i].getPiece() != null) stop = true;
+                enabledTiles.Add(chessboard[pieceRow, pieceColumn+i]);
+                i++;
+            }
+            i = 1;
+            stop = false;
+            while (!stop)
+            {
+                if (pieceColumn - i < 0) break;
+                if (chessboard[pieceRow, pieceColumn-i].getPiece() != null) stop = true;
+                enabledTiles.Add(chessboard[pieceRow, pieceColumn-i]);
+                i++;
+            }
+            i = 1;
+            stop = false;
+            while (!stop)
+            {
+                if (pieceRow + i > 7) break;
+                if (chessboard[pieceRow+i, pieceColumn].getPiece() != null) stop = true;
+                enabledTiles.Add(chessboard[pieceRow+i, pieceColumn]);
+                i++;
+            }
+            i = 1;
+            stop = false;
+            while (!stop)
+            {
+                if (pieceRow - i < 0) break;
+                if (chessboard[pieceRow-i, pieceColumn].getPiece() != null) stop = true;
+                enabledTiles.Add(chessboard[pieceRow-i, pieceColumn]);
+                i++;
+            }
+            return enabledTiles;
         }
     }
 }
