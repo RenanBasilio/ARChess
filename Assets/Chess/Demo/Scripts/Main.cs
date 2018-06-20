@@ -11,10 +11,13 @@ public class Main : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); 
-		int cellNumber = engine.RaycastCell (ray);
-		if (!IsValidCell(cellNumber)) {
-			return;
+		if (Input.GetMouseButtonDown(0)) {
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); 
+			engine.RaycastCell (ray);
+		}
+		if (Input.touchCount > 0) {
+			Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+			engine.RaycastCell (ray);
 		}
 	}
 

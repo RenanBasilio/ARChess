@@ -10,11 +10,15 @@ public class ChessEngine : MonoBehaviour {
 
 	private PieceType[] setup = new PieceType[] {PieceType.Rook, PieceType.Knight, PieceType.Bishop, PieceType.Queen, PieceType.King, PieceType.Bishop, PieceType.Knight, PieceType.Rook};
 
-	// Tile[Column, Row]
+	// Tile[Row, Column]
 	public Tile[,] chessboard;
 	public Dictionary<Player, List<Tile>> lostPieces;
 
+	private List<Tile> activeTiles;
+
 	public void Start(){
+		activeTiles = new List<Tile>();
+
 		Transform board = GameObject.Find("Board").transform;
 		chessboard = new Tile[8,8];
 
@@ -24,13 +28,15 @@ public class ChessEngine : MonoBehaviour {
 
 		for ( int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
-				GameObject piece = new GameObject();
+				GameObject tileObject = new GameObject();
+				Tile tile = tileObject.AddComponent<Tile>();
+				tile.setPosition(i, j);
 
 				Vector3 worldPoint = ToWorldPoint(i, j);
-				piece.transform.position = new Vector3(worldPoint.x, piece.transform.position.y, worldPoint.z);
-				piece.transform.SetParent(board);
+				tileObject.transform.position = new Vector3(worldPoint.x, tile.transform.position.y, worldPoint.z);
+				tileObject.transform.SetParent(board);
 
-				chessboard[i, j] = new Tile(piece, null);
+				chessboard[i, j] = tile;
 			}
 		}
 		transform.SetParent(GameObject.Find("ChessTarget").transform, false);
@@ -39,10 +45,27 @@ public class ChessEngine : MonoBehaviour {
 	public int RaycastCell(Ray ray) {
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, 100)) {
-			Vector3 point = hit.point + new Vector3 (-16, 0, 16);
-			int i = (int)-point.x / 4;
-			int j = (int)point.z / 4;
-			return i * 8 + j;
+			Tile tileHit = hit.transform.GetComponentInParent<Tile>();
+			////////////////////////////////////////////////////////////////////////////
+			List<Pair<int, int>> possibleMoves = tileHit.getPiece().getPossibleMoves();
+			foreach (Tile tile in activeTiles)
+			{
+				tile.disableDisplay();
+			}
+			activeTiles.Clear();
+			foreach (Pair<int, int> item in possibleMoves)
+			{
+				if (tileHit.position.First + item.First <= 7 
+					&& tileHit.position.Second + item.Second <=7
+					&& tileHit.position.First + item.First >= 0
+					&& tileHit.position.Second + item.Second >= 0)
+					{
+						chessboard[tileHit.position.First + item.First, tileHit.position.Second + item.Second].enableDisplay(tileHit.getPiece().owner);
+						activeTiles.Add(chessboard[tileHit.position.First + item.First, tileHit.position.Second + item.Second]);
+					}
+			}
+			////////////////////////////////////////////////////////////////////////////
+			return 1;
 		}
 		return -1;
 	}
