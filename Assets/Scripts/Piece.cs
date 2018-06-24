@@ -16,6 +16,17 @@ namespace Chess
 
         private bool firstMove;
 
+        private Vector3 prefabOffset;
+
+        public float speed = 1.0F;
+        private float startTime;
+        private float journeyLength;
+        private Tile origin;
+        private Vector3 originPosition;
+        private Tile destination;
+        private Vector3 destinationPosition;
+        private bool animating = false;
+
         public void Start() {
             firstMove = true;
         }
@@ -27,7 +38,12 @@ namespace Chess
         }
 
         public void Update() {
-
+            if (animating) {
+                float distCovered = (Time.time - startTime) * speed;
+                float fracJourney = distCovered / journeyLength;
+                transform.position = Vector3.Lerp(originPosition, destinationPosition, fracJourney);
+                if (transform.position == destinationPosition) AfterAnimate();
+            }
         }
 
         public Func<Tile[,], int, int, List<Tile>> getMoveMethods() {
@@ -57,15 +73,15 @@ namespace Chess
             if (chessboard[pieceRow-(int)owner, pieceColumn].getPiece() == null)
                 moves.Add(chessboard[pieceRow-((int)owner), pieceColumn]);
 
-            // If it's the first move, pawns can move forward two spaces;
-            if (firstMove && chessboard[pieceRow-(int)owner*2, pieceColumn].getPiece() == null) 
+            // If it's the first move and there's no enemy in front of it, pawns can move forward two spaces;
+            if (firstMove && chessboard[pieceRow-(int)owner, pieceColumn].getPiece() == null && chessboard[pieceRow-(int)owner*2, pieceColumn].getPiece() == null) 
                 moves.Add(chessboard[pieceRow-((int)owner)*2, pieceColumn]);
 
             // If an enemy piece is in a forward diagonal direction, pawn can take it;
-            if ((pieceColumn+(int)owner < 7 && pieceColumn+(int)owner > 0) && chessboard[pieceRow-(int)owner, pieceColumn+(int)owner].getPiece() != null)
+            if ((pieceColumn+(int)owner <= 7 && pieceColumn+(int)owner >= 0) && chessboard[pieceRow-(int)owner, pieceColumn+(int)owner].getPiece() != null)
                 moves.Add(chessboard[pieceRow-((int)owner), pieceColumn+((int)owner)]);
 
-            if ((pieceColumn-(int)owner < 7 && pieceColumn-(int)owner > 0) && chessboard[pieceRow-(int)owner, pieceColumn-(int)owner].getPiece() != null)
+            if ((pieceColumn-(int)owner <= 7 && pieceColumn-(int)owner >= 0) && chessboard[pieceRow-(int)owner, pieceColumn-(int)owner].getPiece() != null)
                 moves.Add(chessboard[pieceRow-((int)owner), pieceColumn-((int)owner)]);
             return moves;
         }
@@ -203,14 +219,34 @@ namespace Chess
         public Piece Move(Tile origin, Tile destination) {
             firstMove = false;
             Piece taken = null;
+
             if (destination.hasPiece())
             {
                 taken = destination.getPiece();
                 taken.gameObject.SetActive(false);
             }
+            
+            BeforeAnimate(origin, destination);
+
+            return taken;
+        }
+
+        public void BeforeAnimate (Tile origin, Tile destination) {
+            prefabOffset = this.transform.position;
+            startTime = Time.time;
+            this.origin = origin;
+            originPosition = new Vector3(this.origin.transform.position.x, this.prefabOffset.y, this.origin.transform.position.z);
+            this.destination = destination;
+            destinationPosition = new Vector3(this.destination.transform.position.x, this.prefabOffset.y, this.destination.transform.position.z);
+            journeyLength = Vector3.Distance(this.origin.transform.position, this.destination.transform.position);
+            animating = true;
+        }
+
+        public void AfterAnimate () {
+            animating = false;
+            transform.position = prefabOffset;
             destination.setPiece(this);
             origin.setPiece(null);
-            return taken;
         }
     }
 }

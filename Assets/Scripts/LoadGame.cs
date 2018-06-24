@@ -43,7 +43,7 @@ public class LoadGame : MonoBehaviour, ITrackableEventHandler {
             newStatus == TrackableBehaviour.Status.TRACKED)
         {
 			Debug.Log("OK");
-			SceneManager.LoadScene("Demo", LoadSceneMode.Additive);
+			SceneManager.LoadScene("Game", LoadSceneMode.Additive);
 
 			unregister = true;
         }

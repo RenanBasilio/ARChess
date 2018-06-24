@@ -6,6 +6,10 @@ using Chess;
 [System.Serializable]
 public class ChessEngine : MonoBehaviour {
 
+	public enum GamePhase { Init, WhiteMove, BlackMove };
+
+	public GamePhase currentPhase = GamePhase.Init;
+
 	public List<Transform> whitePiecePrefabs;
 	public List<Transform> blackPiecePrefabs;
 
@@ -59,32 +63,31 @@ public class ChessEngine : MonoBehaviour {
 		if (tileHit.isActive()) {
 			Piece taken = activePiece.Move(activePieceTile, tileHit);
 			if (taken != null) lostPieces[taken.owner].Add(taken);
-			foreach (Tile tile in activeTiles)
-            {
-                tile.disableDisplay();
-            }
+			DisableTiles();
+			ControlFlowNext();
 		}
 		else {
-			foreach (Tile tile in activeTiles)
+			if ((currentPhase == GamePhase.BlackMove && tileHit.getPiece().owner == Player.Black) || 
+				(currentPhase == GamePhase.WhiteMove && tileHit.getPiece().owner == Player.White)) 
 			{
-				tile.disableDisplay();
+				DisableTiles();
+				activeTiles.Clear();
+				activeTiles.AddRange(
+					tileHit
+						// Get piece hit
+						.getPiece()
+						// Get movement function from piece hit
+						.getMoveMethods()
+						// Call movement function
+						.Invoke(chessboard, tileHit.position.First, tileHit.position.Second));
+				foreach (Tile tile in activeTiles)
+				{
+					Debug.Log("Enabling tile [" + tile.position.First + "," + tile.position.Second + "]");
+					tile.enableDisplay(tileHit.getPiece().owner);
+				}
+				activePiece = tileHit.getPiece();
+				activePieceTile = tileHit;
 			}
-			activeTiles.Clear();
-			activeTiles.AddRange(
-				tileHit
-					// Get piece hit
-					.getPiece()
-					// Get movement function from piece hit
-					.getMoveMethods()
-					// Call movement function
-					.Invoke(chessboard, tileHit.position.First, tileHit.position.Second));
-			foreach (Tile tile in activeTiles)
-			{
-				Debug.Log("Enabling tile [" + tile.position.First + "," + tile.position.Second + "]");
-				tile.enableDisplay(tileHit.getPiece().owner);
-			}
-			activePiece = tileHit.getPiece();
-			activePieceTile = tileHit;
 		}
 	}
 
@@ -105,7 +108,7 @@ public class ChessEngine : MonoBehaviour {
 			chessboard[7, i].setPiece(Instantiate(blackPiecePrefabs[(int)setup [i]].GetComponent<Piece>()));
 		}
 		
-
+		ControlFlowNext();
 	}
 
 	public static string GetCellString (int cellNumber)
@@ -118,5 +121,27 @@ public class ChessEngine : MonoBehaviour {
 	public static Vector3 ToWorldPoint(int row, int column) {
 
 		return new Vector3 (row*-4+14, 1, column*4-14);
+	}
+
+	public void ControlFlowNext() {
+		switch (currentPhase)
+		{
+			case GamePhase.WhiteMove:
+				currentPhase = GamePhase.BlackMove;
+				break;
+			case GamePhase.BlackMove:
+				currentPhase = GamePhase.WhiteMove;
+				break;
+			default:
+				currentPhase = GamePhase.WhiteMove;
+				break;
+		}
+	}
+
+	private void DisableTiles() {
+		foreach (Tile tile in activeTiles)
+		{
+			tile.disableDisplay();
+		}
 	}
 }
