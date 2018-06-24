@@ -13,8 +13,10 @@ public class ChessEngine : MonoBehaviour {
 
 	// Tile[Row, Column]
 	public Tile[,] chessboard;
-	public Dictionary<Player, List<Tile>> lostPieces;
+	public Dictionary<Player, List<Piece>> lostPieces;
 
+	public Piece activePiece;
+	public Tile activePieceTile;
 	public List<Tile> activeTiles;
 
 	public void Start(){
@@ -23,9 +25,9 @@ public class ChessEngine : MonoBehaviour {
 		Transform board = GameObject.Find("Board").transform;
 		chessboard = new Tile[8,8];
 
-		lostPieces = new Dictionary<Player, List<Tile>>();
-		lostPieces.Add(Player.Black, new List<Tile>());
-		lostPieces.Add(Player.White, new List<Tile>());
+		lostPieces = new Dictionary<Player, List<Piece>>();
+		lostPieces.Add(Player.Black, new List<Piece>());
+		lostPieces.Add(Player.White, new List<Piece>());
 
 		for ( int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
@@ -46,9 +48,23 @@ public class ChessEngine : MonoBehaviour {
 	public int RaycastCell(Ray ray) {
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, 100)) {
-			Tile tileHit = hit.transform.GetComponentInParent<Tile>();
-			////////////////////////////////////////////////////////////////////////////
-			
+			OnRaycastHit(hit);
+		}
+		return -1;
+	}
+
+	public void OnRaycastHit(RaycastHit hit) {
+		Tile tileHit = hit.transform.GetComponentInParent<Tile>();
+
+		if (tileHit.isActive()) {
+			Piece taken = activePiece.Move(activePieceTile, tileHit);
+			if (taken != null) lostPieces[taken.owner].Add(taken);
+			foreach (Tile tile in activeTiles)
+            {
+                tile.disableDisplay();
+            }
+		}
+		else {
 			foreach (Tile tile in activeTiles)
 			{
 				tile.disableDisplay();
@@ -67,41 +83,27 @@ public class ChessEngine : MonoBehaviour {
 				Debug.Log("Enabling tile [" + tile.position.First + "," + tile.position.Second + "]");
 				tile.enableDisplay(tileHit.getPiece().owner);
 			}
-			/*
-			foreach (Pair<int, int> item in possibleMoves)
-			{
-				if (tileHit.position.First + item.First <= 7 
-					&& tileHit.position.Second + item.Second <=7
-					&& tileHit.position.First + item.First >= 0
-					&& tileHit.position.Second + item.Second >= 0)
-					{
-						chessboard[tileHit.position.First + item.First, tileHit.position.Second + item.Second].enableDisplay(tileHit.getPiece().owner);
-						activeTiles.Add(chessboard[tileHit.position.First + item.First, tileHit.position.Second + item.Second]);
-					}
-			}*/
-			////////////////////////////////////////////////////////////////////////////
-			return 1;
+			activePiece = tileHit.getPiece();
+			activePieceTile = tileHit;
 		}
-		return -1;
 	}
 
 	public void SetupPieces() {
 
 		lostPieces[Player.Black].Clear();
 		lostPieces[Player.White].Clear();
-		chessboard[3,4].setPiece(new Piece(Player.Black, PieceType.Pawn, GameObject.Instantiate (blackPiecePrefabs [(int)PieceType.Pawn])));
-		chessboard[4,5].setPiece(new Piece(Player.White, PieceType.Bishop, GameObject.Instantiate (whitePiecePrefabs [(int)PieceType.Pawn])));
-		/*
+		//chessboard[3,4].setPiece(Instantiate(blackPiecePrefabs[(int)PieceType.Pawn].GetComponent<Piece>()));
+		
 		for (int i = 0; i < 8; i++) {
 			// White piece
-			chessboard[0, i].setPiece(new Piece(Player.White, setup[i], GameObject.Instantiate (whitePiecePrefabs [(int)setup [i]])));
+			chessboard[0, i].setPiece(Instantiate(whitePiecePrefabs[(int)setup [i]].GetComponent<Piece>()));
 			// White pawn
-			//chessboard[1, i].setPiece(new Piece(Player.White, PieceType.Pawn, GameObject.Instantiate (whitePiecePrefabs[(int)PieceType.Pawn])));
+			chessboard[1, i].setPiece(Instantiate(whitePiecePrefabs[(int)PieceType.Pawn].GetComponent<Piece>()));
 			// Black pawn
-			chessboard[6, i].setPiece(new Piece(Player.Black, PieceType.Pawn, GameObject.Instantiate (blackPiecePrefabs[(int)PieceType.Pawn])));
+			chessboard[6, i].setPiece(Instantiate(blackPiecePrefabs[(int)PieceType.Pawn].GetComponent<Piece>()));
 			// Black piece
-			chessboard[7, i].setPiece(new Piece(Player.Black, setup[i], GameObject.Instantiate (blackPiecePrefabs [(int)setup [i]])));
-		}*/
+			chessboard[7, i].setPiece(Instantiate(blackPiecePrefabs[(int)setup [i]].GetComponent<Piece>()));
+		}
 		
 
 	}

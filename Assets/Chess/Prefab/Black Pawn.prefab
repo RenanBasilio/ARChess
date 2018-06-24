@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 33550959659707206}
   - component: {fileID: 23667668981231296}
   - component: {fileID: 65022175011970334}
+  - component: {fileID: 114265439819412822}
   m_Layer: 0
   m_Name: Black Pawn
   m_TagString: ChessPiece
@@ -96,3 +97,16 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.061974987, y: 0.061974984, z: 0.11929538}
   m_Center: {x: 9.313226e-10, y: -0.0000000055879354, z: -0.0017246082}
+--- !u!114 &114265439819412822
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1031636751254628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9a58029f91ad04abf7e67b83fb4dbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 5
+  owner: 1

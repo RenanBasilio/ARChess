@@ -9,21 +9,25 @@ namespace Chess
     public enum Player {White=-1, Black=1}
 
     [System.Serializable]
-    public class Piece {
+    public class Piece : MonoBehaviour {
 
         public PieceType type;
         public Player owner;
-        public Transform transform;
 
-        private static Dictionary<PieceType, List<Pair<int, int>>> moves;
         private bool firstMove;
 
-        public Piece(Player owner, PieceType type, Transform transform) {
+        public void Start() {
+            firstMove = true;
+        }
+
+        public void Initialize(Player owner, PieceType type) {
             this.owner = owner;
             this.type = type;
-            this.transform = transform;
             firstMove = true;
-            if(moves == null) moves = new Dictionary<PieceType, List<Pair<int, int>>>(); 
+        }
+
+        public void Update() {
+
         }
 
         public Func<Tile[,], int, int, List<Tile>> getMoveMethods() {
@@ -50,33 +54,33 @@ namespace Chess
             List<Tile> moves = new List<Tile>();
 
             // Pawns can always move forward one space, unless there's an enemy piece on that spot;
-            if (chessboard[pieceRow, pieceColumn+(int)owner].getPiece() == null)
-                moves.Add(chessboard[pieceRow, pieceColumn+((int)owner)]);
+            if (chessboard[pieceRow-(int)owner, pieceColumn].getPiece() == null)
+                moves.Add(chessboard[pieceRow-((int)owner), pieceColumn]);
 
             // If it's the first move, pawns can move forward two spaces;
-            if (firstMove && chessboard[pieceRow, pieceColumn+(int)owner*2].getPiece() == null) 
-                moves.Add(chessboard[pieceRow, pieceColumn+((int)owner)*2]);
+            if (firstMove && chessboard[pieceRow-(int)owner*2, pieceColumn].getPiece() == null) 
+                moves.Add(chessboard[pieceRow-((int)owner)*2, pieceColumn]);
 
             // If an enemy piece is in a forward diagonal direction, pawn can take it;
-            if (chessboard[pieceRow+(int)owner, pieceColumn+(int)owner].getPiece() != null)
-                moves.Add(chessboard[pieceRow+((int)owner), pieceColumn+((int)owner)]);
-
-            if (chessboard[pieceRow-(int)owner, pieceColumn+(int)owner].getPiece() != null)
+            if ((pieceColumn+(int)owner < 7 && pieceColumn+(int)owner > 0) && chessboard[pieceRow-(int)owner, pieceColumn+(int)owner].getPiece() != null)
                 moves.Add(chessboard[pieceRow-((int)owner), pieceColumn+((int)owner)]);
+
+            if ((pieceColumn-(int)owner < 7 && pieceColumn-(int)owner > 0) && chessboard[pieceRow-(int)owner, pieceColumn-(int)owner].getPiece() != null)
+                moves.Add(chessboard[pieceRow-((int)owner), pieceColumn-((int)owner)]);
             return moves;
         }
 
         public static List<Tile> getKnightMoves(Tile[,] chessboard, int pieceRow, int pieceColumn) {
             List<Tile> moves = new List<Tile>();
 
-            if (pieceRow + 2 < 7 && pieceColumn + 1 < 7) moves.Add(chessboard[pieceRow+2, pieceColumn+1]);
-            if (pieceRow + 2 < 7 && pieceColumn - 1 > 0) moves.Add(chessboard[pieceRow+2, pieceColumn-1]);
-            if (pieceRow + 1 < 7 && pieceColumn + 2 < 7) moves.Add(chessboard[pieceRow+1, pieceColumn+2]);
-            if (pieceRow + 1 < 7 && pieceColumn - 2 > 0) moves.Add(chessboard[pieceRow+1, pieceColumn-2]);
-            if (pieceRow - 2 > 0 && pieceColumn + 1 < 7) moves.Add(chessboard[pieceRow-2, pieceColumn+1]);
-            if (pieceRow - 2 > 0 && pieceColumn - 1 > 0) moves.Add(chessboard[pieceRow-2, pieceColumn-1]);
-            if (pieceRow - 1 > 0 && pieceColumn + 2 < 7) moves.Add(chessboard[pieceRow-1, pieceColumn+2]);
-            if (pieceRow - 1 > 0 && pieceColumn - 2 > 0) moves.Add(chessboard[pieceRow-1, pieceColumn-2]);
+            if (pieceRow + 2 <= 7 && pieceColumn + 1 <= 7) moves.Add(chessboard[pieceRow+2, pieceColumn+1]);
+            if (pieceRow + 2 <= 7 && pieceColumn - 1 >= 0) moves.Add(chessboard[pieceRow+2, pieceColumn-1]);
+            if (pieceRow + 1 <= 7 && pieceColumn + 2 <= 7) moves.Add(chessboard[pieceRow+1, pieceColumn+2]);
+            if (pieceRow + 1 <= 7 && pieceColumn - 2 >= 0) moves.Add(chessboard[pieceRow+1, pieceColumn-2]);
+            if (pieceRow - 2 >= 0 && pieceColumn + 1 <= 7) moves.Add(chessboard[pieceRow-2, pieceColumn+1]);
+            if (pieceRow - 2 >= 0 && pieceColumn - 1 >= 0) moves.Add(chessboard[pieceRow-2, pieceColumn-1]);
+            if (pieceRow - 1 >= 0 && pieceColumn + 2 <= 7) moves.Add(chessboard[pieceRow-1, pieceColumn+2]);
+            if (pieceRow - 1 >= 0 && pieceColumn - 2 >= 0) moves.Add(chessboard[pieceRow-1, pieceColumn-2]);
 
             return moves;
         }
@@ -175,26 +179,38 @@ namespace Chess
 
         public static List<Tile> getKingMoves(Tile[,] chessboard, int pieceRow, int pieceColumn) {
             List<Tile> moves = new List<Tile>();
-
-            if (pieceRow + 1 < 7 || !chessboard[pieceRow+1, pieceColumn].isInCheck()) 
+            if (pieceRow + 1 <= 7 && !chessboard[pieceRow+1, pieceColumn].isInCheck()) 
                 moves.Add(chessboard[pieceRow+1, pieceColumn]);
-            if (pieceRow - 1 < 7 || !chessboard[pieceRow-1, pieceColumn].isInCheck()) 
+            if (pieceRow - 1 >= 0 && !chessboard[pieceRow-1, pieceColumn].isInCheck()) 
                 moves.Add(chessboard[pieceRow-1, pieceColumn]);
-            if (pieceColumn + 1 < 7 || !chessboard[pieceRow, pieceColumn+1].isInCheck()) 
+            if (pieceColumn + 1 <= 7 && !chessboard[pieceRow, pieceColumn+1].isInCheck()) 
                 moves.Add(chessboard[pieceRow, pieceColumn+1]);
-            if (pieceColumn - 1 > 0 || !chessboard[pieceRow, pieceColumn-1].isInCheck()) 
+            if (pieceColumn - 1 >= 0 && !chessboard[pieceRow, pieceColumn-1].isInCheck()) 
                 moves.Add(chessboard[pieceRow, pieceColumn-1]);
 
-            if ((pieceRow + 1 > 0 && pieceColumn + 1 < 7) || !chessboard[pieceRow+1, pieceColumn+1].isInCheck()) 
+            if ((pieceRow + 1 <= 7 && pieceColumn + 1 <= 7) && !chessboard[pieceRow+1, pieceColumn+1].isInCheck()) 
                 moves.Add(chessboard[pieceRow+1, pieceColumn+1]);
-            if ((pieceRow - 1 > 0 && pieceColumn - 1 > 0) || !chessboard[pieceRow-1, pieceColumn-1].isInCheck()) 
+            if ((pieceRow - 1 >= 0 && pieceColumn - 1 >= 0) && !chessboard[pieceRow-1, pieceColumn-1].isInCheck()) 
                 moves.Add(chessboard[pieceRow-1, pieceColumn-1]);
-            if ((pieceRow + 1 > 0 && pieceColumn - 1 < 7) || !chessboard[pieceRow+1, pieceColumn-1].isInCheck()) 
+            if ((pieceRow + 1 <= 7 && pieceColumn - 1 >= 0) && !chessboard[pieceRow+1, pieceColumn-1].isInCheck()) 
                 moves.Add(chessboard[pieceRow+1, pieceColumn-1]);
-            if ((pieceRow - 1 > 0 && pieceColumn + 1 > 0) || !chessboard[pieceRow-1, pieceColumn+1].isInCheck()) 
+            if ((pieceRow - 1 >= 0 && pieceColumn + 1 <= 7) && !chessboard[pieceRow-1, pieceColumn+1].isInCheck()) 
                 moves.Add(chessboard[pieceRow-1, pieceColumn+1]);
 
             return moves;
+        }
+
+        public Piece Move(Tile origin, Tile destination) {
+            firstMove = false;
+            Piece taken = null;
+            if (destination.hasPiece())
+            {
+                taken = destination.getPiece();
+                taken.gameObject.SetActive(false);
+            }
+            destination.setPiece(this);
+            origin.setPiece(null);
+            return taken;
         }
     }
 }

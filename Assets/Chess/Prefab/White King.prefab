@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 33441944802336768}
   - component: {fileID: 23992715128443332}
   - component: {fileID: 65159573782112308}
+  - component: {fileID: 114196822512362152}
   m_Layer: 0
   m_Name: White King
   m_TagString: ChessPiece
@@ -96,3 +97,16 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.051382888, y: 0.0513829, z: 0.018840682}
   m_Center: {x: 0.0000000018626451, y: 2.948948e-10, z: 0.0006263069}
+--- !u!114 &114196822512362152
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1273725991896454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9a58029f91ad04abf7e67b83fb4dbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  owner: -1

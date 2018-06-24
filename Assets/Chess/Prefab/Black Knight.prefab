@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 33624220946836294}
   - component: {fileID: 23733394573932104}
   - component: {fileID: 65016385551471030}
+  - component: {fileID: 114844275672812628}
   m_Layer: 0
   m_Name: Black Knight
   m_TagString: ChessPiece
@@ -96,3 +97,16 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.10359394, y: 0.08245056, z: 0.18479688}
   m_Center: {x: -0.010571684, y: -0.00000001490116, z: 0.0043202746}
+--- !u!114 &114844275672812628
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1291360291826688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9a58029f91ad04abf7e67b83fb4dbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 3
+  owner: 1

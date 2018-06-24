@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -6,6 +7,8 @@ namespace Chess
     public class Tile : MonoBehaviour {
 		public Piece piece;
 		private GameObject displayCube;
+
+		private bool active = false;
 
 		public Pair<int, int> position;
 
@@ -30,24 +33,27 @@ namespace Chess
 			return piece;
 		}
 
-		public void setPiece(Piece piece) {
+		public Piece setPiece(Piece piece) {
 			this.piece = piece;
-			this.piece.transform.SetParent(transform, false);
+			if(piece != null) this.piece.transform.SetParent(transform, false);
+			return getPiece();
 		}
 
 		public bool hasPiece() {
-			return (piece == null)? true : false;
+			return (piece == null)? false : true;
 		}
 
 		public void enableDisplay(Player player) {
             if (piece != null) {
                 if (piece.owner != player) {
                     displayCube.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+					active = true;
     			    displayCube.SetActive(true);
                 }
                 else return;
             }
             else {
+				active = true;
                 displayCube.GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
                 displayCube.SetActive(true);
             }
@@ -55,11 +61,16 @@ namespace Chess
 		}
 
         public void disableDisplay() {
+			active = false;
             this.displayCube.SetActive(false);
         }
 
 		public bool isInCheck() {
 			return false;
+		}
+
+		public bool isActive() {
+			return active;
 		}
 	}
 }
