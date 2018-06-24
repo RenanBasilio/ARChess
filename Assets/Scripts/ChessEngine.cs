@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Chess;
 
+[System.Serializable]
 public class ChessEngine : MonoBehaviour {
 
 	public List<Transform> whitePiecePrefabs;
@@ -14,7 +15,7 @@ public class ChessEngine : MonoBehaviour {
 	public Tile[,] chessboard;
 	public Dictionary<Player, List<Tile>> lostPieces;
 
-	private List<Tile> activeTiles;
+	public List<Tile> activeTiles;
 
 	public void Start(){
 		activeTiles = new List<Tile>();
@@ -88,8 +89,9 @@ public class ChessEngine : MonoBehaviour {
 
 		lostPieces[Player.Black].Clear();
 		lostPieces[Player.White].Clear();
-		//chessboard[3,4].setPiece(new Piece(Player.Black, PieceType.Rook, GameObject.Instantiate (blackPiecePrefabs [(int)PieceType.Pawn])));
-		
+		chessboard[3,4].setPiece(new Piece(Player.Black, PieceType.Pawn, GameObject.Instantiate (blackPiecePrefabs [(int)PieceType.Pawn])));
+		chessboard[4,5].setPiece(new Piece(Player.White, PieceType.Bishop, GameObject.Instantiate (whitePiecePrefabs [(int)PieceType.Pawn])));
+		/*
 		for (int i = 0; i < 8; i++) {
 			// White piece
 			chessboard[0, i].setPiece(new Piece(Player.White, setup[i], GameObject.Instantiate (whitePiecePrefabs [(int)setup [i]])));
@@ -99,7 +101,7 @@ public class ChessEngine : MonoBehaviour {
 			chessboard[6, i].setPiece(new Piece(Player.Black, PieceType.Pawn, GameObject.Instantiate (blackPiecePrefabs[(int)PieceType.Pawn])));
 			// Black piece
 			chessboard[7, i].setPiece(new Piece(Player.Black, setup[i], GameObject.Instantiate (blackPiecePrefabs [(int)setup [i]])));
-		}
+		}*/
 		
 
 	}

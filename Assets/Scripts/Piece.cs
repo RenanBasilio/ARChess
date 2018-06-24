@@ -26,116 +26,63 @@ namespace Chess
             if(moves == null) moves = new Dictionary<PieceType, List<Pair<int, int>>>(); 
         }
 
-        public List<Pair<int, int>> getPossibleMoves () {
-            switch (type)
-            {
-                case PieceType.Pawn:
-                    // Pawns can only move forward, and can only take enemy 
-                    // pieces diagonally.
-                    List<Pair<int, int>> pawnMoves;
-                    pawnMoves = new List<Pair<int, int>>();
-                    pawnMoves.Add(new Pair<int, int>(-1 * (int)owner, 0));
-                    pawnMoves.Add(new Pair<int, int>(-1 * (int)owner, 1));
-                    pawnMoves.Add(new Pair<int, int>(-1 * (int)owner, -1));
-
-                    if (firstMove) pawnMoves.Add(new Pair<int, int>(-2 * (int)owner, 0));
-                    return pawnMoves;
-
-                case PieceType.Rook:
-                    // Rooks can move forward, backward or sideways up to 7 moves.
-                    if (moves.ContainsKey(PieceType.Rook)) return moves[PieceType.Rook];
-                    else {
-                        List<Pair<int, int>> rookMoves = new List<Pair<int, int>>();
-                        for (int i = -7; i < 8; i++) {
-                            if (i != 0) {
-                                rookMoves.Add(new Pair<int, int>(i, 0));
-                                rookMoves.Add(new Pair<int, int>(0, i));
-                            }
-                        }
-                        moves.Add(PieceType.Rook, rookMoves);
-                        return rookMoves;
-                    }
-
-                case PieceType.Bishop:
-                    if (moves.ContainsKey(PieceType.Bishop)) return moves[PieceType.Bishop];
-                    else {
-                        List<Pair<int, int>> bishopMoves = new List<Pair<int, int>>();
-                        for (int i = -7; i < 8; i++) {
-                            if (i != 0) {
-                                bishopMoves.Add(new Pair<int, int>(i, i));
-                                bishopMoves.Add(new Pair<int, int>(i, -i));
-                            }
-                        }
-                        moves.Add(PieceType.Bishop, bishopMoves);
-                        return bishopMoves;
-                    }
-
-                case PieceType.Knight:
-                    if (moves.ContainsKey(PieceType.Knight)) return moves[PieceType.Knight];
-                    else {
-                        List<Pair<int, int>> knightMoves = new List<Pair<int, int>>();
-                        
-                        knightMoves.Add(new Pair<int, int>(2, 1));
-                        knightMoves.Add(new Pair<int, int>(2, -1));
-                        knightMoves.Add(new Pair<int, int>(-2, 1));
-                        knightMoves.Add(new Pair<int, int>(-2, -1));
-                        knightMoves.Add(new Pair<int, int>(1, 2));
-                        knightMoves.Add(new Pair<int, int>(1, -2));
-                        knightMoves.Add(new Pair<int, int>(-1, 2));
-                        knightMoves.Add(new Pair<int, int>(-1, -2));
-
-                        moves.Add(PieceType.Knight, knightMoves);
-                        return knightMoves;
-                    }
-
-                case PieceType.Queen:
-                    if (moves.ContainsKey(PieceType.Queen)) return moves[PieceType.Queen];
-                    else {
-                        List<Pair<int, int>> queenMoves = new List<Pair<int, int>>();
-                        for (int i = -7; i < 8; i++) {
-                            if (i != 0) {
-                                queenMoves.Add(new Pair<int, int>(i, 0));
-                                queenMoves.Add(new Pair<int, int>(0, i));
-                                queenMoves.Add(new Pair<int, int>(i, i));
-                                queenMoves.Add(new Pair<int, int>(i, -i));
-                            }
-                        }
-                        moves.Add(PieceType.Queen, queenMoves);
-                        return queenMoves;
-                    }
-
-                case PieceType.King:
-                    // King can move to any adjacent tile.
-                    if (moves.ContainsKey(PieceType.King)) return moves[PieceType.King];
-                    else {
-                        List<Pair<int, int>> kingMoves = new List<Pair<int, int>>();
-                        for (int i = -1; i < 1; i++) {
-                            for (int j = -1; j < 1; j++ ) {
-                                if (i != 0 && j != 0) kingMoves.Add(new Pair<int, int>(i, j));
-                            }
-                        }
-                        moves.Add(PieceType.King, kingMoves);
-                        return kingMoves;
-                    }
-
-                default:
-                    return new List<Pair<int, int>>();
-            }
-        }
-
         public Func<Tile[,], int, int, List<Tile>> getMoveMethods() {
             switch (type)
             {
+                case PieceType.Pawn:
+                    return this.getPawnMoves;
+                case PieceType.Knight:
+                    return getKnightMoves;
                 case PieceType.Rook:
-                    return movesRook;
+                    return getRookMoves;
+                case PieceType.Bishop:
+                    return getBishopMoves;
+                case PieceType.Queen:
+                    return getQueenMoves;
+                case PieceType.King:
+                    return getKingMoves;
                 default:
                     return null;
             }
         }
 
-        public static List<Tile> movesRook(Tile[,] chessboard, int pieceRow, int pieceColumn) {
+        public List<Tile> getPawnMoves(Tile[,] chessboard, int pieceRow, int pieceColumn) {
+            List<Tile> moves = new List<Tile>();
+
+            // Pawns can always move forward one space, unless there's an enemy piece on that spot;
+            if (chessboard[pieceRow, pieceColumn+(int)owner].getPiece() == null)
+                moves.Add(chessboard[pieceRow, pieceColumn+((int)owner)]);
+
+            // If it's the first move, pawns can move forward two spaces;
+            if (firstMove && chessboard[pieceRow, pieceColumn+(int)owner*2].getPiece() == null) 
+                moves.Add(chessboard[pieceRow, pieceColumn+((int)owner)*2]);
+
+            // If an enemy piece is in a forward diagonal direction, pawn can take it;
+            if (chessboard[pieceRow+(int)owner, pieceColumn+(int)owner].getPiece() != null)
+                moves.Add(chessboard[pieceRow+((int)owner), pieceColumn+((int)owner)]);
+
+            if (chessboard[pieceRow-(int)owner, pieceColumn+(int)owner].getPiece() != null)
+                moves.Add(chessboard[pieceRow-((int)owner), pieceColumn+((int)owner)]);
+            return moves;
+        }
+
+        public static List<Tile> getKnightMoves(Tile[,] chessboard, int pieceRow, int pieceColumn) {
+            List<Tile> moves = new List<Tile>();
+
+            if (pieceRow + 2 < 7 && pieceColumn + 1 < 7) moves.Add(chessboard[pieceRow+2, pieceColumn+1]);
+            if (pieceRow + 2 < 7 && pieceColumn - 1 > 0) moves.Add(chessboard[pieceRow+2, pieceColumn-1]);
+            if (pieceRow + 1 < 7 && pieceColumn + 2 < 7) moves.Add(chessboard[pieceRow+1, pieceColumn+2]);
+            if (pieceRow + 1 < 7 && pieceColumn - 2 > 0) moves.Add(chessboard[pieceRow+1, pieceColumn-2]);
+            if (pieceRow - 2 > 0 && pieceColumn + 1 < 7) moves.Add(chessboard[pieceRow-2, pieceColumn+1]);
+            if (pieceRow - 2 > 0 && pieceColumn - 1 > 0) moves.Add(chessboard[pieceRow-2, pieceColumn-1]);
+            if (pieceRow - 1 > 0 && pieceColumn + 2 < 7) moves.Add(chessboard[pieceRow-1, pieceColumn+2]);
+            if (pieceRow - 1 > 0 && pieceColumn - 2 > 0) moves.Add(chessboard[pieceRow-1, pieceColumn-2]);
+
+            return moves;
+        }
+
+        public static List<Tile> getRookMoves(Tile[,] chessboard, int pieceRow, int pieceColumn) {
             bool stop = false;
-            Piece piece = chessboard[pieceRow, pieceColumn].getPiece();
             List<Tile> enabledTiles = new List<Tile>();
 
             int i = 1;
@@ -174,6 +121,80 @@ namespace Chess
                 i++;
             }
             return enabledTiles;
+        }
+
+        public static List<Tile> getBishopMoves(Tile[,] chessboard, int pieceRow, int pieceColumn) {
+            bool stop = false;
+            Piece piece = chessboard[pieceRow, pieceColumn].getPiece();
+            List<Tile> enabledTiles = new List<Tile>();
+
+            int i = 1;
+            while (!stop)
+            {
+                if (pieceRow + i > 7 || pieceColumn + i > 7 ) break;
+                if (chessboard[pieceRow+i, pieceColumn+i].getPiece() != null) stop = true;
+                enabledTiles.Add(chessboard[pieceRow+i, pieceColumn+i]);
+                i++;
+            }
+            i = 1;
+            stop = false;
+            while (!stop)
+            {
+                if (pieceRow - i < 0 || pieceColumn - i < 0) break;
+                if (chessboard[pieceRow-i, pieceColumn-i].getPiece() != null) stop = true;
+                enabledTiles.Add(chessboard[pieceRow-i, pieceColumn-i]);
+                i++;
+            }
+            i = 1;
+            stop = false;
+            while (!stop)
+            {
+                if (pieceRow + i > 7 ||  pieceColumn - i < 0) break;
+                if (chessboard[pieceRow+i, pieceColumn-i].getPiece() != null) stop = true;
+                enabledTiles.Add(chessboard[pieceRow+i, pieceColumn-i]);
+                i++;
+            }
+            i = 1;
+            stop = false;
+            while (!stop)
+            {
+                if (pieceRow - i < 0 || pieceColumn + i > 7 ) break;
+                if (chessboard[pieceRow-i, pieceColumn+i].getPiece() != null) stop = true;
+                enabledTiles.Add(chessboard[pieceRow-i, pieceColumn+i]);
+                i++;
+            }
+            return enabledTiles;
+        }
+
+        public static List<Tile> getQueenMoves(Tile[,] chessboard, int pieceRow, int pieceColumn) {
+            List<Tile> moves = new List<Tile>();
+            moves.AddRange(getRookMoves(chessboard, pieceRow, pieceColumn));
+            moves.AddRange(getBishopMoves(chessboard, pieceRow, pieceColumn));
+            return moves;
+        }
+
+        public static List<Tile> getKingMoves(Tile[,] chessboard, int pieceRow, int pieceColumn) {
+            List<Tile> moves = new List<Tile>();
+
+            if (pieceRow + 1 < 7 || !chessboard[pieceRow+1, pieceColumn].isInCheck()) 
+                moves.Add(chessboard[pieceRow+1, pieceColumn]);
+            if (pieceRow - 1 < 7 || !chessboard[pieceRow-1, pieceColumn].isInCheck()) 
+                moves.Add(chessboard[pieceRow-1, pieceColumn]);
+            if (pieceColumn + 1 < 7 || !chessboard[pieceRow, pieceColumn+1].isInCheck()) 
+                moves.Add(chessboard[pieceRow, pieceColumn+1]);
+            if (pieceColumn - 1 > 0 || !chessboard[pieceRow, pieceColumn-1].isInCheck()) 
+                moves.Add(chessboard[pieceRow, pieceColumn-1]);
+
+            if ((pieceRow + 1 > 0 && pieceColumn + 1 < 7) || !chessboard[pieceRow+1, pieceColumn+1].isInCheck()) 
+                moves.Add(chessboard[pieceRow+1, pieceColumn+1]);
+            if ((pieceRow - 1 > 0 && pieceColumn - 1 > 0) || !chessboard[pieceRow-1, pieceColumn-1].isInCheck()) 
+                moves.Add(chessboard[pieceRow-1, pieceColumn-1]);
+            if ((pieceRow + 1 > 0 && pieceColumn - 1 < 7) || !chessboard[pieceRow+1, pieceColumn-1].isInCheck()) 
+                moves.Add(chessboard[pieceRow+1, pieceColumn-1]);
+            if ((pieceRow - 1 > 0 && pieceColumn + 1 > 0) || !chessboard[pieceRow-1, pieceColumn+1].isInCheck()) 
+                moves.Add(chessboard[pieceRow-1, pieceColumn+1]);
+
+            return moves;
         }
     }
 }

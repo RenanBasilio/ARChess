@@ -57,5 +57,9 @@ namespace Chess
         public void disableDisplay() {
             this.displayCube.SetActive(false);
         }
+
+		public bool isInCheck() {
+			return false;
+		}
 	}
 }
