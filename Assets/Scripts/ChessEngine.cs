@@ -61,9 +61,22 @@ public class ChessEngine : MonoBehaviour {
 		Tile tileHit = hit.transform.GetComponentInParent<Tile>();
 
 		if (tileHit.isActive()) {
+			foreach (Tile tile in activeTiles)
+			{
+				tile.removeCheck(activePiece);
+			}
+
 			Piece taken = activePiece.Move(activePieceTile, tileHit);
 			if (taken != null) lostPieces[taken.owner].Add(taken);
+			
 			DisableTiles();
+			
+			List<Tile> tilesInCheck = activePiece.getMoveMethods().Invoke(chessboard, tileHit.position.First, tileHit.position.Second);
+			foreach (Tile tile in tilesInCheck)
+			{
+				tile.addCheck(activePiece);
+			}
+			
 			ControlFlowNext();
 		}
 		else {

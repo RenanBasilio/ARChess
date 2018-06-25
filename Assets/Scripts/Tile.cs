@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -12,6 +13,8 @@ namespace Chess
 
 		public Pair<int, int> position;
 
+		private Dictionary<Player, List<Piece>> keepingInCheck;
+
 		void Start() {
 
 			this.displayCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -23,6 +26,9 @@ namespace Chess
 			this.displayCube.transform.localScale = new Vector3(3, 1, 3);
 			this.displayCube.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
 			this.displayCube.SetActive(false);
+			keepingInCheck = new Dictionary<Player, List<Piece>>();
+			keepingInCheck.Add(Player.Black, new List<Piece>());
+			keepingInCheck.Add(Player.White, new List<Piece>());
 		}
 
 		public void setPosition(int row, int column) {
@@ -65,8 +71,18 @@ namespace Chess
             this.displayCube.SetActive(false);
         }
 
-		public bool isInCheck() {
-			return false;
+		public bool isInCheck(Player owner) {
+			switch (owner)
+			{
+				case Player.Black:
+					if (keepingInCheck[Player.White].Count > 0) return true;
+					else return false;
+				case Player.White:
+					if (keepingInCheck[Player.Black].Count > 0) return true;
+					else return false;
+				default:
+					return false;
+			}
 		}
 
 		public bool isActive() {
@@ -75,6 +91,18 @@ namespace Chess
 
 		public void Reset() {
 			piece = null;
+			foreach (List<Piece> pieces in keepingInCheck.Values)
+			{
+				pieces.Clear();
+			}
+		}
+
+		public void addCheck(Piece piece) {
+			keepingInCheck[piece.owner].Add(piece);
+		}
+
+		public void removeCheck(Piece piece) {
+			keepingInCheck[piece.owner].Remove(piece);
 		}
 	}
 }

@@ -145,7 +145,6 @@ namespace Chess
 
         public static List<Tile> getBishopMoves(Tile[,] chessboard, int pieceRow, int pieceColumn) {
             bool stop = false;
-            Piece piece = chessboard[pieceRow, pieceColumn].getPiece();
             List<Tile> enabledTiles = new List<Tile>();
 
             int i = 1;
@@ -195,22 +194,23 @@ namespace Chess
 
         public static List<Tile> getKingMoves(Tile[,] chessboard, int pieceRow, int pieceColumn) {
             List<Tile> moves = new List<Tile>();
-            if (pieceRow + 1 <= 7 && !chessboard[pieceRow+1, pieceColumn].isInCheck()) 
+            Player player = chessboard[pieceRow, pieceColumn].getPiece().owner;
+            if (pieceRow + 1 <= 7 && !chessboard[pieceRow+1, pieceColumn].isInCheck(player)) 
                 moves.Add(chessboard[pieceRow+1, pieceColumn]);
-            if (pieceRow - 1 >= 0 && !chessboard[pieceRow-1, pieceColumn].isInCheck()) 
+            if (pieceRow - 1 >= 0 && !chessboard[pieceRow-1, pieceColumn].isInCheck(player)) 
                 moves.Add(chessboard[pieceRow-1, pieceColumn]);
-            if (pieceColumn + 1 <= 7 && !chessboard[pieceRow, pieceColumn+1].isInCheck()) 
+            if (pieceColumn + 1 <= 7 && !chessboard[pieceRow, pieceColumn+1].isInCheck(player)) 
                 moves.Add(chessboard[pieceRow, pieceColumn+1]);
-            if (pieceColumn - 1 >= 0 && !chessboard[pieceRow, pieceColumn-1].isInCheck()) 
+            if (pieceColumn - 1 >= 0 && !chessboard[pieceRow, pieceColumn-1].isInCheck(player)) 
                 moves.Add(chessboard[pieceRow, pieceColumn-1]);
 
-            if ((pieceRow + 1 <= 7 && pieceColumn + 1 <= 7) && !chessboard[pieceRow+1, pieceColumn+1].isInCheck()) 
+            if ((pieceRow + 1 <= 7 && pieceColumn + 1 <= 7) && !chessboard[pieceRow+1, pieceColumn+1].isInCheck(player)) 
                 moves.Add(chessboard[pieceRow+1, pieceColumn+1]);
-            if ((pieceRow - 1 >= 0 && pieceColumn - 1 >= 0) && !chessboard[pieceRow-1, pieceColumn-1].isInCheck()) 
+            if ((pieceRow - 1 >= 0 && pieceColumn - 1 >= 0) && !chessboard[pieceRow-1, pieceColumn-1].isInCheck(player)) 
                 moves.Add(chessboard[pieceRow-1, pieceColumn-1]);
-            if ((pieceRow + 1 <= 7 && pieceColumn - 1 >= 0) && !chessboard[pieceRow+1, pieceColumn-1].isInCheck()) 
+            if ((pieceRow + 1 <= 7 && pieceColumn - 1 >= 0) && !chessboard[pieceRow+1, pieceColumn-1].isInCheck(player)) 
                 moves.Add(chessboard[pieceRow+1, pieceColumn-1]);
-            if ((pieceRow - 1 >= 0 && pieceColumn + 1 <= 7) && !chessboard[pieceRow-1, pieceColumn+1].isInCheck()) 
+            if ((pieceRow - 1 >= 0 && pieceColumn + 1 <= 7) && !chessboard[pieceRow-1, pieceColumn+1].isInCheck(player)) 
                 moves.Add(chessboard[pieceRow-1, pieceColumn+1]);
 
             return moves;
