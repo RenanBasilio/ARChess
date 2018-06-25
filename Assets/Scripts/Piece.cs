@@ -192,25 +192,25 @@ namespace Chess
             return moves;
         }
 
-        public static List<Tile> getKingMoves(Tile[,] chessboard, int pieceRow, int pieceColumn) {
+        public List<Tile> getKingMoves(Tile[,] chessboard, int pieceRow, int pieceColumn) {
             List<Tile> moves = new List<Tile>();
-            Player player = chessboard[pieceRow, pieceColumn].getPiece().owner;
-            if (pieceRow + 1 <= 7 && !chessboard[pieceRow+1, pieceColumn].isInCheck(player)) 
+
+            if (pieceRow + 1 <= 7 && !chessboard[pieceRow+1, pieceColumn].isInCheck(owner)) 
                 moves.Add(chessboard[pieceRow+1, pieceColumn]);
-            if (pieceRow - 1 >= 0 && !chessboard[pieceRow-1, pieceColumn].isInCheck(player)) 
+            if (pieceRow - 1 >= 0 && !chessboard[pieceRow-1, pieceColumn].isInCheck(owner)) 
                 moves.Add(chessboard[pieceRow-1, pieceColumn]);
-            if (pieceColumn + 1 <= 7 && !chessboard[pieceRow, pieceColumn+1].isInCheck(player)) 
+            if (pieceColumn + 1 <= 7 && !chessboard[pieceRow, pieceColumn+1].isInCheck(owner)) 
                 moves.Add(chessboard[pieceRow, pieceColumn+1]);
-            if (pieceColumn - 1 >= 0 && !chessboard[pieceRow, pieceColumn-1].isInCheck(player)) 
+            if (pieceColumn - 1 >= 0 && !chessboard[pieceRow, pieceColumn-1].isInCheck(owner)) 
                 moves.Add(chessboard[pieceRow, pieceColumn-1]);
 
-            if ((pieceRow + 1 <= 7 && pieceColumn + 1 <= 7) && !chessboard[pieceRow+1, pieceColumn+1].isInCheck(player)) 
+            if ((pieceRow + 1 <= 7 && pieceColumn + 1 <= 7) && !chessboard[pieceRow+1, pieceColumn+1].isInCheck(owner)) 
                 moves.Add(chessboard[pieceRow+1, pieceColumn+1]);
-            if ((pieceRow - 1 >= 0 && pieceColumn - 1 >= 0) && !chessboard[pieceRow-1, pieceColumn-1].isInCheck(player)) 
+            if ((pieceRow - 1 >= 0 && pieceColumn - 1 >= 0) && !chessboard[pieceRow-1, pieceColumn-1].isInCheck(owner)) 
                 moves.Add(chessboard[pieceRow-1, pieceColumn-1]);
-            if ((pieceRow + 1 <= 7 && pieceColumn - 1 >= 0) && !chessboard[pieceRow+1, pieceColumn-1].isInCheck(player)) 
+            if ((pieceRow + 1 <= 7 && pieceColumn - 1 >= 0) && !chessboard[pieceRow+1, pieceColumn-1].isInCheck(owner)) 
                 moves.Add(chessboard[pieceRow+1, pieceColumn-1]);
-            if ((pieceRow - 1 >= 0 && pieceColumn + 1 <= 7) && !chessboard[pieceRow-1, pieceColumn+1].isInCheck(player)) 
+            if ((pieceRow - 1 >= 0 && pieceColumn + 1 <= 7) && !chessboard[pieceRow-1, pieceColumn+1].isInCheck(owner)) 
                 moves.Add(chessboard[pieceRow-1, pieceColumn+1]);
 
             return moves;
@@ -232,6 +232,9 @@ namespace Chess
         }
 
         public void BeforeAnimate (Tile origin, Tile destination) {
+            destination.setPiece(this);
+            origin.setPiece(null);
+            
             prefabOffset = this.transform.position;
             startTime = Time.time;
             this.origin = origin;
@@ -245,8 +248,6 @@ namespace Chess
         public void AfterAnimate () {
             animating = false;
             transform.position = prefabOffset;
-            destination.setPiece(this);
-            origin.setPiece(null);
         }
     }
 }

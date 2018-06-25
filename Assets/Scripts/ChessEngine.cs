@@ -19,6 +19,9 @@ public class ChessEngine : MonoBehaviour {
 	public Tile[,] chessboard;
 	public Dictionary<Player, List<Piece>> lostPieces;
 
+	// First tile is the piece which is in check. Second tile is the piece which puts it in check.
+	public Pair<Tile, Tile> inCheck;
+
 	public Piece activePiece;
 	public Tile activePieceTile;
 	public List<Tile> activeTiles;
@@ -61,12 +64,30 @@ public class ChessEngine : MonoBehaviour {
 		Tile tileHit = hit.transform.GetComponentInParent<Tile>();
 
 		if (tileHit.isActive()) {
-			foreach (Tile tile in activeTiles)
-			{
-				tile.removeCheck(activePiece);
+
+			for (int i = 0; i <= 7; i++) {
+				for (int j = 0; j <= 7; j++) {
+					chessboard[i, j].removeCheck(activePiece);
+				}
 			}
 
 			Piece taken = activePiece.Move(activePieceTile, tileHit);
+
+			if (inCheck != null)
+			{
+				List<Tile> checkedTiles = 
+					inCheck.Second
+						.getPiece()
+						.getMoveMethods()
+						.Invoke(chessboard, inCheck.Second.position.First, inCheck.Second.position.Second);
+
+				if (!checkedTiles.Contains(inCheck.First) || !inCheck.First.hasPiece()) {
+					inCheck.First.toggleDisplayCheck();
+					inCheck.Second.toggleDisplayCheck();
+					inCheck = null;
+				}
+			}
+
 			if (taken != null) lostPieces[taken.owner].Add(taken);
 			
 			DisableTiles();
@@ -75,6 +96,12 @@ public class ChessEngine : MonoBehaviour {
 			foreach (Tile tile in tilesInCheck)
 			{
 				tile.addCheck(activePiece);
+				if (tile.hasPiece() && tile.getPiece().type == PieceType.King && tile.getPiece().owner != tileHit.getPiece().owner)
+				{
+					tileHit.toggleDisplayCheck();
+					tile.toggleDisplayCheck();
+					inCheck = new Pair<Tile, Tile>(tile, tileHit);
+				}
 			}
 			
 			ControlFlowNext();
@@ -94,7 +121,6 @@ public class ChessEngine : MonoBehaviour {
 						.Invoke(chessboard, tileHit.position.First, tileHit.position.Second));
 				foreach (Tile tile in activeTiles)
 				{
-					Debug.Log("Enabling tile [" + tile.position.First + "," + tile.position.Second + "]");
 					tile.enableDisplay(tileHit.getPiece().owner);
 				}
 				activePiece = tileHit.getPiece();

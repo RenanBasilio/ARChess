@@ -71,6 +71,16 @@ namespace Chess
             this.displayCube.SetActive(false);
         }
 
+		public void toggleDisplayCheck() {
+			if (!displayCube.activeSelf){
+				displayCube.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
+				displayCube.SetActive(true);
+			}
+			else {
+				displayCube.SetActive(false);
+			}
+		}
+
 		public bool isInCheck(Player owner) {
 			switch (owner)
 			{
