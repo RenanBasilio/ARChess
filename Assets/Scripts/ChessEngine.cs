@@ -71,7 +71,6 @@ public class ChessEngine : MonoBehaviour {
 				(currentPhase == GamePhase.WhiteMove && tileHit.getPiece().owner == Player.White)) 
 			{
 				DisableTiles();
-				activeTiles.Clear();
 				activeTiles.AddRange(
 					tileHit
 						// Get piece hit
@@ -143,5 +142,29 @@ public class ChessEngine : MonoBehaviour {
 		{
 			tile.disableDisplay();
 		}
+		activeTiles.Clear();
+	}
+
+	public void Reset() {
+		DisableTiles();
+
+		activePiece = null;
+		activePieceTile = null;
+
+		foreach (List<Piece> item in lostPieces.Values)
+		{
+			item.Clear();
+		}
+		
+		for (int i = 0; i <= 7; i++) {
+			for (int j = 0; j <= 7; j++) {
+				chessboard[i, j].Reset();
+			}
+		}
+
+		System.GC.Collect();
+
+		currentPhase = GamePhase.Init;
+		SetupPieces();
 	}
 }

@@ -20,9 +20,4 @@ public class Main : MonoBehaviour {
 			engine.RaycastCell (ray);
 		}
 	}
-
-	bool IsValidCell (int cellNumber)
-	{
-		return cellNumber >= 0 && cellNumber < 64;
-	}
 }

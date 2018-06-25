@@ -72,5 +72,9 @@ namespace Chess
 		public bool isActive() {
 			return active;
 		}
+
+		public void Reset() {
+			piece = null;
+		}
 	}
 }
