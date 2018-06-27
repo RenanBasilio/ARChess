@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Chess;
+using System;
 
 [System.Serializable]
 public class ChessEngine : MonoBehaviour {
@@ -73,6 +74,17 @@ public class ChessEngine : MonoBehaviour {
 
 			Piece taken = activePiece.Move(activePieceTile, tileHit);
 
+			if (taken != null) 
+			{
+				lostPieces[taken.owner].Add(taken);
+				if (taken.type == PieceType.King) 
+				{
+					Checkmmate(taken);
+					inCheck.Second.disableDisplay();
+					inCheck = null;
+				}
+			}
+
 			if (inCheck != null)
 			{
 				List<Tile> checkedTiles = 
@@ -87,8 +99,6 @@ public class ChessEngine : MonoBehaviour {
 					inCheck = null;
 				}
 			}
-
-			if (taken != null) lostPieces[taken.owner].Add(taken);
 			
 			DisableTiles();
 			
@@ -129,7 +139,7 @@ public class ChessEngine : MonoBehaviour {
 		}
 	}
 
-	public void SetupPieces() {
+    public void SetupPieces() {
 
 		lostPieces[Player.Black].Clear();
 		lostPieces[Player.White].Clear();
@@ -189,6 +199,7 @@ public class ChessEngine : MonoBehaviour {
 
 		activePiece = null;
 		activePieceTile = null;
+		inCheck = null;
 
 		foreach (List<Piece> item in lostPieces.Values)
 		{
@@ -205,5 +216,22 @@ public class ChessEngine : MonoBehaviour {
 
 		currentPhase = GamePhase.Init;
 		SetupPieces();
+	}
+
+	public void Checkmmate(Piece king) {
+		Debug.Log("Checkmate!");
+		String winner;
+		switch (king.owner) {
+			case Player.Black:
+				winner = "BRANCO";
+				break;
+			case Player.White:
+				winner = "PRETO";
+				break;
+			default:
+				winner = "";
+				break;
+		}
+		GameObject.Find("ImageTarget").GetComponent<UI>().GameOverScreen(winner);
 	}
 }

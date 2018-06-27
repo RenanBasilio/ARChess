@@ -86,6 +86,11 @@ namespace Chess
             return moves;
         }
 
+        public void Destroy()
+        {
+            GameObject.Destroy(this.gameObject, 0);
+        }
+
         public static List<Tile> getKnightMoves(Tile[,] chessboard, int pieceRow, int pieceColumn) {
             List<Tile> moves = new List<Tile>();
 

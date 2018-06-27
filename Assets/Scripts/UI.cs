@@ -6,11 +6,14 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Vuforia;
 
-public class LoadGame : MonoBehaviour, ITrackableEventHandler {
+public class UI : MonoBehaviour, ITrackableEventHandler {
 
 	private TrackableBehaviour mTrackableBehaviour;
 
 	private bool unregister;
+
+	public GameObject winText;
+	public GameObject resetButton; 
 
 	// Use this for initialization
 	void Start () {
@@ -48,4 +51,17 @@ public class LoadGame : MonoBehaviour, ITrackableEventHandler {
 			unregister = true;
         }
     }
+
+	public void ResetGame() {
+		Debug.Log("Resetting");
+		GameObject.Find("Chess").GetComponent<ChessEngine>().Reset();
+		winText.SetActive(false);
+		resetButton.SetActive(false);
+	}
+
+	public void GameOverScreen(String winner) {
+		winText.SetActive(true);
+		resetButton.SetActive(true);
+		winText.GetComponent<Text>().text = winner.ToUpper() + " GANHOU!";
+	}
 }

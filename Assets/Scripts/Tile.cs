@@ -100,7 +100,8 @@ namespace Chess
 		}
 
 		public void Reset() {
-			piece = null;
+			if (piece != null) piece.Destroy();
+			
 			foreach (List<Piece> pieces in keepingInCheck.Values)
 			{
 				pieces.Clear();
